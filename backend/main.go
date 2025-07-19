@@ -5,6 +5,8 @@ import (
 	"chatgpt_clone_backend/handlers"
 	"context"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -23,6 +25,10 @@ func main() {
 	r.GET("/history/:conversation_id", handlers.HistoryHandler(db))
 	r.POST("/upload", handlers.UploadHandler(cfg, db))
 
-	log.Println("Server running on :8080")
-	r.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" 
+	}
+	log.Printf("Listening on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
